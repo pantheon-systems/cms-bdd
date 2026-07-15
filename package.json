@@ -1,0 +1,45 @@
+{
+  "name": "cms-bdd-public",
+  "version": "1.0.0",
+  "description": "Reusable Playwright-BDD step definitions, page objects, and utilities for testing Drupal and WordPress sites",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo 'This is a framework library. Run tests from your test repository.'",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "playwright",
+    "bdd",
+    "automation",
+    "testing",
+    "e2e",
+    "framework",
+    "step-definitions",
+    "drupal",
+    "wordpress"
+  ],
+  "author": "",
+  "license": "ISC",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "devDependencies": {
+    "@types/node": "^20.19.39",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "@playwright/test": "^1.60.0",
+    "playwright": "^1.60.0",
+    "playwright-bdd": "^8.5.1",
+    "allure-playwright": "^3.0.0"
+  },
+  "dependencies": {
+    "dotenv-flow": "^4.1.0"
+  },
+  "overrides": {
+    "uuid": ">=14.0.0"
+  }
+}
