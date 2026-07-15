@@ -36,6 +36,7 @@ export { ElasticPressInstantResults } from './components/wordpress/ElasticPressI
 export { Logger } from './utils/logger';
 export { TestHelpers } from './utils/helpers';
 export { APIHelper } from './utils/api-helper';
+export { getSiteEnv, getSiteName, ensureConnectionMode, terminusExec, generateMultidevName, getGitUrl, waitForWorkflows } from './utils/terminus.util';
 
 // Config
 export { ENV } from './config/environment';
