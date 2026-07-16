@@ -1,7 +1,7 @@
 {
   "name": "cms-bdd-public",
   "version": "1.0.0",
-  "description": "Reusable Playwright-BDD step definitions, page objects, and utilities for testing Drupal and WordPress sites",
+  "description": "Reusable Playwright page objects, components, fixtures, and utilities for testing Drupal and WordPress sites",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -16,7 +16,7 @@
     "testing",
     "e2e",
     "framework",
-    "step-definitions",
+    "page-objects",
     "drupal",
     "wordpress"
   ],
