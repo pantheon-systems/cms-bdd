@@ -27,18 +27,19 @@
     "README.md"
   ],
   "devDependencies": {
-    "@types/node": "^20.19.39",
-    "typescript": "^5.9.3",
     "@playwright/test": "^1.60.0",
-    "playwright-bdd": "^8.5.1"
+    "@types/node": "^20.19.39",
+    "playwright-bdd": "^8.5.1",
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
     "@playwright/test": "^1.60.0",
+    "allure-playwright": "^3.0.0",
     "playwright": "^1.60.0",
-    "playwright-bdd": "^8.5.1",
-    "allure-playwright": "^3.0.0"
+    "playwright-bdd": "^8.5.1"
   },
   "dependencies": {
+    "cms-bdd-public": "file:",
     "dotenv-flow": "^4.1.0"
   },
   "overrides": {

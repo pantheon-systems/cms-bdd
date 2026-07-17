@@ -22,7 +22,7 @@ export class AdminPage extends BasePage {
 
   /** The main admin content area */
   get contentArea() {
-    return this.page.locator('main, #content, .layout-content');
+    return this.page.locator('main, #content, .layout-content').first();
   }
 
   /**

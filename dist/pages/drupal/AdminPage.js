@@ -20,7 +20,7 @@ class AdminPage extends BasePage_1.BasePage {
     }
     /** The main admin content area */
     get contentArea() {
-        return this.page.locator('main, #content, .layout-content');
+        return this.page.locator('main, #content, .layout-content').first();
     }
     /**
      * Verify the Drupal admin UI is fully loaded
