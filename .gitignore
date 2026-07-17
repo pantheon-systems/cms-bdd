@@ -24,14 +24,3 @@ yarn-error.log*
 # Temporary files
 *.tmp
 .cache/
-
-# Examples directory artifacts (test repo artifacts)
-examples/.features-gen/
-examples/test-results/
-examples/playwright-report/
-examples/allure-results/
-examples/allure-report/
-examples/node_modules/
-examples/.env
-examples/package-lock.json
-examples/run-tests.sh

@@ -28,7 +28,9 @@
   ],
   "devDependencies": {
     "@types/node": "^20.19.39",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "@playwright/test": "^1.60.0",
+    "playwright-bdd": "^8.5.1"
   },
   "peerDependencies": {
     "@playwright/test": "^1.60.0",
