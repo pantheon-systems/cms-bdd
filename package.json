@@ -1,5 +1,5 @@
 {
-  "name": "cms-bdd-public",
+  "name": "cms-bdd",
   "version": "1.0.0",
   "description": "Reusable Playwright page objects, components, fixtures, and utilities for testing Drupal and WordPress sites",
   "main": "dist/index.js",
@@ -39,7 +39,6 @@
     "playwright-bdd": "^8.5.1"
   },
   "dependencies": {
-    "cms-bdd-public": "file:",
     "dotenv-flow": "^4.1.0"
   },
   "overrides": {

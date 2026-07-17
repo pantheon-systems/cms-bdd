@@ -1,4 +1,4 @@
-# cms-bdd-public
+# cms-bdd
 
 Reusable Playwright page objects, components, fixtures, and utilities for testing Drupal and WordPress sites.
 
@@ -19,8 +19,8 @@ This repo intentionally does **not** ship Cucumber/Playwright-BDD step definitio
 ```typescript
 // test-repo/steps/search-api.steps.ts
 import { createBdd } from 'playwright-bdd';
-import { test } from 'cms-bdd-public';
-import { terminusExec, getSiteEnv } from 'cms-bdd-public';
+import { test } from 'cms-bdd';
+import { terminusExec, getSiteEnv } from 'cms-bdd';
 
 const { When } = createBdd(test);
 
@@ -32,9 +32,13 @@ When('I post the Solr schema', async () => {
 
 This keeps the framework reusable across test repos with different CUJs, while this package stays focused on the reusable primitives (page objects, components, fixtures, utils) those steps are built from.
 
+**Setting up a new consumer repo?** See [`docs/setting-up-a-test-repo.md`](docs/setting-up-a-test-repo.md) for a full walkthrough, including the non-obvious `file:`-dependency gotchas (symlink resolution, exact version pinning, etc...) and a troubleshooting table for the errors you're most likely to hit.
+
 ## Requirements
 
 - Node.js and a Playwright/Playwright-BDD test repo that imports this package
+- Your consumer repo needs an `.npmrc` with `install-links=true` — without it, `file:` dependencies resolve as symlinks and this package's own `require()` calls break in ways that are non-obvious to debug (see the setup doc linked above)
+- Pin `@playwright/test`, `playwright`, and `playwright-bdd` to exact matching versions in your consumer repo (no `^`/`~`) — e.g. `@playwright/test@1.60.0`, `playwright@1.60.0`, `playwright-bdd@8.5.1`. Mismatches between these three break in ways ranging from an ERESOLVE conflict to a cryptic ESM loader crash.
 - If your test repo's step definitions call into `terminus.util.ts`: the [Terminus CLI](https://pantheon.io/docs/terminus) installed and authenticated, and SSH access configured for the target site environment (see below)
 
 ## Configuring Terminus for CI
@@ -47,11 +51,10 @@ Terminus itself is a public CLI — using it doesn't require anything proprietar
     mkdir -p ~/.ssh
     ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N "" -q
     terminus ssh-key:add ~/.ssh/id_rsa.pub
-    ssh-keyscan -p 2222 codeserver.dev.*.drush.in appserver.dev.*.drush.in >> ~/.ssh/known_hosts 2>/dev/null || true
     echo "StrictHostKeyChecking no" >> ~/.ssh/config
 ```
 
-This generates a fresh, ephemeral SSH keypair per run and registers the public half with Pantheon via `terminus ssh-key:add`, then pre-populates `known_hosts` so `terminus remote:wp`/`terminus remote:drush` calls don't hang on a host-key prompt. Nothing here is a long-lived secret — the key is regenerated every run.
+This generates a fresh, ephemeral SSH keypair per run and registers the public half with Pantheon via `terminus ssh-key:add`. `StrictHostKeyChecking no` disables host-key verification so `terminus remote:wp`/`terminus remote:drush` calls don't hang on a host-key prompt. Nothing here is a long-lived secret — the key is regenerated every run.
 
 Before this step, Terminus needs to be authenticated with a machine token (e.g. `terminus auth:login --machine-token=$TERMINUS_MACHINE_TOKEN`), where the token itself is pulled from your CI secret store, not committed anywhere.
 
