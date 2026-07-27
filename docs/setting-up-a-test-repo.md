@@ -307,6 +307,105 @@ npm install
 npx playwright install --with-deps
 ```
 
+## Running in CI (GitHub Actions)
+
+Locally, the `file:../cms-bdd` dependency resolves because the framework repo
+sits right next to the test repo on your machine. In CI, there's no sibling
+checkout — so the workflow needs to fetch `cms-bdd` separately and repoint the
+`file:` path before `npm install` runs.
+
+### How the dependency override works
+
+The pattern is two steps:
+
+1. **Fetch the framework repo** to a temporary path using
+   [`pantheon-systems/action-fetch-dependency`](https://github.com/pantheon-systems/action-fetch-dependency).
+   This is a GitHub App-backed action (`pantheon-dependency-fetcher`) that
+   works across the `pantheon-systems` org with no per-repo secrets — it just
+   needs `id-token: write` on the job for OIDC federation.
+
+2. **Rewrite the `file:` path** in `package.json` before installing, so npm
+   resolves from the fetched copy instead of a nonexistent sibling directory:
+
+   ```yaml
+   - name: Fetch framework repo
+     uses: pantheon-systems/action-fetch-dependency@<pinned-sha>
+     with:
+       repository: pantheon-systems/cms-bdd
+       destination: /tmp/cms-bdd
+       validate-checksum: false
+
+   - name: Install dependencies
+     run: |
+       npm pkg set dependencies.cms-bdd="file:/tmp/cms-bdd"
+       npm install
+   ```
+
+   `npm pkg set` edits `package.json` in place — it changes
+   `"cms-bdd": "file:../cms-bdd"` to `"cms-bdd": "file:/tmp/cms-bdd"`. Since
+   `install-links=true` is in `.npmrc`, `npm install` copies the built `dist/`
+   into `node_modules` the same way it does locally. No npm registry is
+   involved anywhere in this flow.
+
+### Pin the action SHA
+
+Per org security policy, all GitHub Actions must use pinned commit SHAs, not
+version tags. To get the SHA for a tag:
+
+```bash
+gh api repos/pantheon-systems/action-fetch-dependency/git/ref/tags/<tag> --jq '.object.sha'
+```
+
+### Minimal workflow skeleton
+
+```yaml
+jobs:
+  tests:
+    runs-on: sbx-pan-qa-ui-01
+    permissions:
+      contents: write
+      id-token: write    # required for action-fetch-dependency OIDC
+    steps:
+      - uses: actions/checkout@<pinned-sha>
+
+      - name: Fetch framework repo
+        uses: pantheon-systems/action-fetch-dependency@<pinned-sha>
+        with:
+          repository: pantheon-systems/cms-bdd
+          destination: /tmp/cms-bdd
+          validate-checksum: false
+
+      - name: Install dependencies
+        run: |
+          npm pkg set dependencies.cms-bdd="file:/tmp/cms-bdd"
+          npm install
+
+      - name: Install browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run tests
+        env:
+          HEADLESS: 'true'
+          # ... your env vars and secrets
+        run: npm test
+```
+
+For a complete example with Auth0, Terminus SSH setup, Allure reporting, and
+GitHub Pages deployment, see
+[`cms-test-bdd-automation`'s workflow files](https://github.com/pantheon-systems/cms-test-bdd-automation/tree/main/.github/workflows).
+
+### Why not publish to an npm registry?
+
+The framework changes frequently during active development, and the test repos
+are tightly coupled to it. A `file:` dependency with a CI fetch step means:
+
+- No publish/version/release cycle to manage — CI always gets the latest from
+  `main` (or whatever ref `action-fetch-dependency` is configured to fetch).
+- Local development uses the exact same install mechanism (`file:` path +
+  `install-links=true`), just pointed at a different directory.
+- The only difference between local and CI is *which path* the `file:`
+  dependency points to.
+
 ## Troubleshooting reference
 
 Errors we actually hit, in the order we hit them, for quick pattern-matching:
