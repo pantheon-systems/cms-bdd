@@ -34,12 +34,29 @@ This keeps the framework reusable across test repos with different CUJs, while t
 
 **Setting up a new consumer repo?** See [`docs/setting-up-a-test-repo.md`](docs/setting-up-a-test-repo.md) for a full walkthrough, including the non-obvious `file:`-dependency gotchas (symlink resolution, exact version pinning, etc...) and a troubleshooting table for the errors you're most likely to hit.
 
-## Requirements
+## Dependencies
 
-- Node.js and a Playwright/Playwright-BDD test repo that imports this package
-- Your consumer repo needs an `.npmrc` with `install-links=true` — without it, `file:` dependencies resolve as symlinks and this package's own `require()` calls break in ways that are non-obvious to debug (see the setup doc linked above)
-- Pin `@playwright/test`, `playwright`, and `playwright-bdd` to exact matching versions in your consumer repo (no `^`/`~`) — e.g. `@playwright/test@1.60.0`, `playwright@1.60.0`, `playwright-bdd@8.5.1`. Mismatches between these three break in ways ranging from an ERESOLVE conflict to a cryptic ESM loader crash.
-- If your test repo's step definitions call into `terminus.util.ts`: the [Terminus CLI](https://pantheon.io/docs/terminus) installed and authenticated, and SSH access configured for the target site environment (see below)
+| Tool | Minimum version | Verify | Required for |
+|------|----------------|--------|--------------|
+| Node.js | 18+ | `node -v` | Building and running |
+| npm | 9+ | `npm -v` | Ships with Node |
+| [Terminus](https://pantheon.io/docs/terminus) | 3.x | `terminus --version` | Steps that use `terminus.util.ts` (multidev provisioning, drush/wp-cli commands) |
+
+Quick check:
+
+```bash
+node -v && npm -v && terminus --version 2>/dev/null && echo "All deps OK"
+```
+
+Terminus is only needed if your test repo's step definitions call into
+`terminus.util.ts` — pure UI-only test repos can skip it entirely.
+
+### Consumer repo requirements
+
+Your test repo (the one that imports `cms-bdd`) also needs:
+
+- An `.npmrc` with `install-links=true` — without it, `file:` dependencies resolve as symlinks and this package's own `require()` calls break in ways that are non-obvious to debug (see the [setup doc](docs/setting-up-a-test-repo.md))
+- `@playwright/test`, `playwright`, and `playwright-bdd` pinned to exact matching versions (no `^`/`~`) — e.g. `@playwright/test@1.60.0`, `playwright@1.60.0`, `playwright-bdd@8.5.1`. Mismatches between these three break in ways ranging from an ERESOLVE conflict to a cryptic ESM loader crash
 
 ## Configuring Terminus for CI
 

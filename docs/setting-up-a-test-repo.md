@@ -347,14 +347,6 @@ The pattern is two steps:
    into `node_modules` the same way it does locally. No npm registry is
    involved anywhere in this flow.
 
-### Pin the action SHA
-
-Per org security policy, all GitHub Actions must use pinned commit SHAs, not
-version tags. To get the SHA for a tag:
-
-```bash
-gh api repos/pantheon-systems/action-fetch-dependency/git/ref/tags/<tag> --jq '.object.sha'
-```
 
 ### Minimal workflow skeleton
 
