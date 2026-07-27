@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "lint": "eslint src/ && prettier --check src/",
-    "lint:fix": "eslint --fix src/ && prettier --write src/",
+    "format": "eslint --fix src/ && prettier --write src/",
     "test": "echo 'This is a framework library. Run tests from your test repository.'",
     "prepublishOnly": "npm run build"
   },
