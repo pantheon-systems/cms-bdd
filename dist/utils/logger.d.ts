@@ -1,8 +1,5 @@
-export declare class Logger {
-    private static formatMessage;
-    static info(message: string): void;
-    static error(message: string): void;
-    static warn(message: string): void;
-    static debug(message: string): void;
-}
+export declare function info(message: string): void;
+export declare function error(message: string): void;
+export declare function warn(message: string): void;
+export declare function debug(message: string): void;
 //# sourceMappingURL=logger.d.ts.map

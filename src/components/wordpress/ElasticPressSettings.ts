@@ -33,7 +33,9 @@ export class ElasticPressSettings {
   }
 
   get saveChangesButton() {
-    return this.page.locator('input[type="submit"][value="Save Changes"], button:text-is("Save Changes")');
+    return this.page.locator(
+      'input[type="submit"][value="Save Changes"], button:text-is("Save Changes")',
+    );
   }
 
   async isSettingsPageLoaded(): Promise<boolean> {
@@ -75,7 +77,10 @@ export class ElasticPressSettings {
   }
 
   async getSubscriptionToken(): Promise<string> {
-    await this.subscriptionTokenInput.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE });
+    await this.subscriptionTokenInput.waitFor({
+      state: 'visible',
+      timeout: TIMEOUTS.ELEMENT_VISIBLE,
+    });
     return (await this.subscriptionTokenInput.inputValue()).trim();
   }
 }

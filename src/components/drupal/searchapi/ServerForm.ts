@@ -36,7 +36,9 @@ export class ServerForm {
    * Connection details area — auto-populated when a managed connector is selected
    */
   get connectionDetails() {
-    return this.page.locator('.search-api-solr-connection-details, #edit-backend-config-connector-config');
+    return this.page.locator(
+      '.search-api-solr-connection-details, #edit-backend-config-connector-config',
+    );
   }
 
   get statusMessage() {

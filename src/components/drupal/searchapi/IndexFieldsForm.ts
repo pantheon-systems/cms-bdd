@@ -34,7 +34,9 @@ export class IndexFieldsForm {
    */
   async addField(fieldName: string): Promise<void> {
     const row = this.page.locator('tr').filter({ hasText: fieldName });
-    const addButton = row.getByRole('button', { name: 'Add' }).or(row.getByRole('link', { name: 'Add' }));
+    const addButton = row
+      .getByRole('button', { name: 'Add' })
+      .or(row.getByRole('link', { name: 'Add' }));
     await addButton.first().click();
     await this.page.waitForLoadState('networkidle', { timeout: TIMEOUTS.LOAD_STATE });
   }
@@ -42,10 +44,17 @@ export class IndexFieldsForm {
   async saveChanges(): Promise<void> {
     // After adding fields, navigate back to the Fields tab which has the save button
     const fieldsTab = this.page.getByRole('link', { name: 'Fields' });
-    const doneLink = this.page.getByRole('link', { name: 'Done' }).or(this.page.getByRole('link', { name: 'Back to fields' }));
+    const doneLink = this.page
+      .getByRole('link', { name: 'Done' })
+      .or(this.page.getByRole('link', { name: 'Back to fields' }));
 
     // Try "Done" or "Back to fields" first, fall back to Fields tab
-    if (await doneLink.first().isVisible().catch(() => false)) {
+    if (
+      await doneLink
+        .first()
+        .isVisible()
+        .catch(() => false)
+    ) {
       await doneLink.first().click();
     } else if (await fieldsTab.isVisible().catch(() => false)) {
       await fieldsTab.click();
@@ -53,7 +62,9 @@ export class IndexFieldsForm {
     await this.page.waitForLoadState('networkidle', { timeout: TIMEOUTS.NAVIGATION });
 
     // Now click Save changes on the fields management page
-    const saveBtn = this.page.getByRole('button', { name: 'Save changes' }).or(this.page.locator('#edit-submit'));
+    const saveBtn = this.page
+      .getByRole('button', { name: 'Save changes' })
+      .or(this.page.locator('#edit-submit'));
     await saveBtn.first().click();
     await this.page.waitForLoadState('networkidle', { timeout: TIMEOUTS.NAVIGATION });
   }

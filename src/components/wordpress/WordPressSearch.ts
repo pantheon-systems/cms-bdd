@@ -15,7 +15,9 @@ export class WordPressSearch {
   }
 
   get searchSubmitButton() {
-    return this.page.locator('button:text-is("Search"), input[type="submit"][value="Search"]').first();
+    return this.page
+      .locator('button:text-is("Search"), input[type="submit"][value="Search"]')
+      .first();
   }
 
   get searchResultsHeading() {
@@ -52,7 +54,9 @@ export class WordPressSearch {
 
   async hasResults(): Promise<boolean> {
     try {
-      await this.searchResultItems.first().waitFor({ state: 'visible', timeout: TIMEOUTS.NAVIGATION });
+      await this.searchResultItems
+        .first()
+        .waitFor({ state: 'visible', timeout: TIMEOUTS.NAVIGATION });
       return true;
     } catch {
       return false;
@@ -60,7 +64,9 @@ export class WordPressSearch {
   }
 
   async getResultCount(): Promise<number> {
-    await this.searchResultItems.first().waitFor({ state: 'visible', timeout: TIMEOUTS.NAVIGATION });
+    await this.searchResultItems
+      .first()
+      .waitFor({ state: 'visible', timeout: TIMEOUTS.NAVIGATION });
     return await this.searchResultItems.count();
   }
 

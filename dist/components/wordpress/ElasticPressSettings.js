@@ -63,7 +63,10 @@ class ElasticPressSettings {
         return (await this.subscriptionIdInput.inputValue()).trim();
     }
     async getSubscriptionToken() {
-        await this.subscriptionTokenInput.waitFor({ state: 'visible', timeout: constants_1.TIMEOUTS.ELEMENT_VISIBLE });
+        await this.subscriptionTokenInput.waitFor({
+            state: 'visible',
+            timeout: constants_1.TIMEOUTS.ELEMENT_VISIBLE,
+        });
         return (await this.subscriptionTokenInput.inputValue()).trim();
     }
 }

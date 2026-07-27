@@ -13,7 +13,9 @@ class WordPressSearch {
         return this.page.locator('input[type="search"]').first();
     }
     get searchSubmitButton() {
-        return this.page.locator('button:text-is("Search"), input[type="submit"][value="Search"]').first();
+        return this.page
+            .locator('button:text-is("Search"), input[type="submit"][value="Search"]')
+            .first();
     }
     get searchResultsHeading() {
         return this.page.locator('h1').filter({ hasText: 'Search results for' });
@@ -44,7 +46,9 @@ class WordPressSearch {
     }
     async hasResults() {
         try {
-            await this.searchResultItems.first().waitFor({ state: 'visible', timeout: constants_1.TIMEOUTS.NAVIGATION });
+            await this.searchResultItems
+                .first()
+                .waitFor({ state: 'visible', timeout: constants_1.TIMEOUTS.NAVIGATION });
             return true;
         }
         catch {
@@ -52,7 +56,9 @@ class WordPressSearch {
         }
     }
     async getResultCount() {
-        await this.searchResultItems.first().waitFor({ state: 'visible', timeout: constants_1.TIMEOUTS.NAVIGATION });
+        await this.searchResultItems
+            .first()
+            .waitFor({ state: 'visible', timeout: constants_1.TIMEOUTS.NAVIGATION });
         return await this.searchResultItems.count();
     }
     async hasResultsHeading() {

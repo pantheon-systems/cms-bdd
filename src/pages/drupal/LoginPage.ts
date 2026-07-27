@@ -50,7 +50,10 @@ export class LoginPage extends BasePage {
    */
   async isLoggedIn(): Promise<boolean> {
     try {
-      await this.toolbar.toolbarBar.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE });
+      await this.toolbar.toolbarBar.waitFor({
+        state: 'visible',
+        timeout: TIMEOUTS.ELEMENT_VISIBLE,
+      });
       return true;
     } catch {
       return false;

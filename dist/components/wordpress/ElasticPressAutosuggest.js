@@ -18,7 +18,9 @@ class ElasticPressAutosuggest {
     }
     async waitForSuggestions() {
         try {
-            await this.suggestionItems.first().waitFor({ state: 'visible', timeout: constants_1.TIMEOUTS.ELEMENT_VISIBLE });
+            await this.suggestionItems
+                .first()
+                .waitFor({ state: 'visible', timeout: constants_1.TIMEOUTS.ELEMENT_VISIBLE });
             return true;
         }
         catch {
@@ -26,12 +28,14 @@ class ElasticPressAutosuggest {
         }
     }
     async getSuggestionTexts() {
-        await this.suggestionItems.first().waitFor({ state: 'visible', timeout: constants_1.TIMEOUTS.ELEMENT_VISIBLE });
+        await this.suggestionItems
+            .first()
+            .waitFor({ state: 'visible', timeout: constants_1.TIMEOUTS.ELEMENT_VISIBLE });
         return await this.suggestionItems.allInnerTexts();
     }
     async hasSuggestion(text) {
         const suggestions = await this.getSuggestionTexts();
-        return suggestions.some(s => s.trim().toLowerCase().includes(text.toLowerCase()));
+        return suggestions.some((s) => s.trim().toLowerCase().includes(text.toLowerCase()));
     }
     async clickSuggestion(text) {
         await this.suggestionsList.locator('li', { hasText: text }).click();

@@ -27,7 +27,9 @@ export class ElasticPressSync {
   }
 
   get deleteAndResyncCheckbox() {
-    return this.page.locator('label:has-text("Delete all data and start fresh sync"), input[type="checkbox"]').first();
+    return this.page
+      .locator('label:has-text("Delete all data and start fresh sync"), input[type="checkbox"]')
+      .first();
   }
 
   get syncHistorySection() {
@@ -64,7 +66,10 @@ export class ElasticPressSync {
 
   async hasSyncHistory(): Promise<boolean> {
     try {
-      await this.syncHistorySection.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE });
+      await this.syncHistorySection.waitFor({
+        state: 'visible',
+        timeout: TIMEOUTS.ELEMENT_VISIBLE,
+      });
       return true;
     } catch {
       return false;

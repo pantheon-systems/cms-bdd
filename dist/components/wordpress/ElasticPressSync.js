@@ -21,7 +21,9 @@ class ElasticPressSync {
         return this.page.locator('.ep-sync-progress-bar, progress');
     }
     get deleteAndResyncCheckbox() {
-        return this.page.locator('label:has-text("Delete all data and start fresh sync"), input[type="checkbox"]').first();
+        return this.page
+            .locator('label:has-text("Delete all data and start fresh sync"), input[type="checkbox"]')
+            .first();
     }
     get syncHistorySection() {
         return this.page.locator('text=Sync history');
@@ -54,7 +56,10 @@ class ElasticPressSync {
     }
     async hasSyncHistory() {
         try {
-            await this.syncHistorySection.waitFor({ state: 'visible', timeout: constants_1.TIMEOUTS.ELEMENT_VISIBLE });
+            await this.syncHistorySection.waitFor({
+                state: 'visible',
+                timeout: constants_1.TIMEOUTS.ELEMENT_VISIBLE,
+            });
             return true;
         }
         catch {

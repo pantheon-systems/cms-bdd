@@ -45,9 +45,9 @@ class IndexOverview {
             const statusText = await this.page.locator('body').textContent();
             if (!statusText)
                 return false;
-            return statusText.includes('100%') ||
+            return (statusText.includes('100%') ||
                 statusText.includes('All items have been indexed') ||
-                statusText.includes('remaining: 0');
+                statusText.includes('remaining: 0'));
         }
         catch {
             return false;

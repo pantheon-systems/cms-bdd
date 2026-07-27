@@ -46,7 +46,10 @@ class LoginPage extends BasePage_1.BasePage {
      */
     async isLoggedIn() {
         try {
-            await this.toolbar.toolbarBar.waitFor({ state: 'visible', timeout: constants_1.TIMEOUTS.ELEMENT_VISIBLE });
+            await this.toolbar.toolbarBar.waitFor({
+                state: 'visible',
+                timeout: constants_1.TIMEOUTS.ELEMENT_VISIBLE,
+            });
             return true;
         }
         catch {

@@ -22,7 +22,9 @@ export class ElasticPressAutosuggest {
 
   async waitForSuggestions(): Promise<boolean> {
     try {
-      await this.suggestionItems.first().waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE });
+      await this.suggestionItems
+        .first()
+        .waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE });
       return true;
     } catch {
       return false;
@@ -30,13 +32,15 @@ export class ElasticPressAutosuggest {
   }
 
   async getSuggestionTexts(): Promise<string[]> {
-    await this.suggestionItems.first().waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE });
+    await this.suggestionItems
+      .first()
+      .waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE });
     return await this.suggestionItems.allInnerTexts();
   }
 
   async hasSuggestion(text: string): Promise<boolean> {
     const suggestions = await this.getSuggestionTexts();
-    return suggestions.some(s => s.trim().toLowerCase().includes(text.toLowerCase()));
+    return suggestions.some((s) => s.trim().toLowerCase().includes(text.toLowerCase()));
   }
 
   async clickSuggestion(text: string): Promise<void> {

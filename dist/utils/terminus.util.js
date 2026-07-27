@@ -1,37 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getSiteEnv = getSiteEnv;
 exports.getSiteName = getSiteName;
@@ -40,6 +7,7 @@ exports.terminusExec = terminusExec;
 exports.generateMultidevName = generateMultidevName;
 exports.getGitUrl = getGitUrl;
 exports.waitForWorkflows = waitForWorkflows;
+const child_process_1 = require("child_process");
 const environment_1 = require("../config/environment");
 /**
  * Parse the Pantheon site.env from a pantheonsite.io URL.
@@ -84,14 +52,15 @@ function getSiteName(url) {
  * Includes retry logic for Integrated Composer builds.
  */
 async function ensureConnectionMode(mode, url) {
-    const { execSync } = await Promise.resolve().then(() => __importStar(require('child_process')));
     const env = getSiteEnv(url);
     let currentMode = '';
     try {
-        currentMode = execSync(`terminus env:info ${env} --field=connection_mode 2>&1`, {
+        currentMode = (0, child_process_1.execSync)(`terminus env:info ${env} --field=connection_mode 2>&1`, {
             encoding: 'utf-8',
             timeout: 30000,
-        }).trim().toLowerCase();
+        })
+            .trim()
+            .toLowerCase();
     }
     catch {
         // If we can't determine mode, try to set it anyway
@@ -100,14 +69,14 @@ async function ensureConnectionMode(mode, url) {
         return;
     for (let attempt = 0; attempt < 3; attempt++) {
         try {
-            execSync(`terminus connection:set ${env} ${mode}`, {
+            (0, child_process_1.execSync)(`terminus connection:set ${env} ${mode}`, {
                 encoding: 'utf-8',
                 timeout: 60000,
             });
             return;
         }
         catch {
-            await new Promise(r => setTimeout(r, 15000));
+            await new Promise((r) => setTimeout(r, 15000));
         }
     }
     throw new Error(`Failed to switch ${env} to ${mode} mode after 3 attempts`);
@@ -116,8 +85,7 @@ async function ensureConnectionMode(mode, url) {
  * Execute a terminus command and return the output
  */
 function terminusExec(command, timeoutMs = 120000) {
-    const { execSync } = require('child_process');
-    return execSync(`terminus ${command}`, {
+    return (0, child_process_1.execSync)(`terminus ${command}`, {
         encoding: 'utf-8',
         timeout: timeoutMs,
     }).trim();
@@ -161,7 +129,7 @@ async function waitForWorkflows(siteName, maxWaitMs = 300000) {
         catch {
             // parse failure or terminus error — keep waiting
         }
-        await new Promise(r => setTimeout(r, pollInterval));
+        await new Promise((r) => setTimeout(r, pollInterval));
     }
     throw new Error(`Timed out waiting for workflows on ${siteName}`);
 }

@@ -1,22 +1,20 @@
-export class Logger {
-  private static formatMessage(level: string, message: string): string {
-    const timestamp = new Date().toISOString();
-    return `[${timestamp}] [${level}] ${message}`;
-  }
+function formatMessage(level: string, message: string): string {
+  const timestamp = new Date().toISOString();
+  return `[${timestamp}] [${level}] ${message}`;
+}
 
-  static info(message: string): void {
-    console.log(this.formatMessage('INFO', message));
-  }
+export function info(message: string): void {
+  console.log(formatMessage('INFO', message));
+}
 
-  static error(message: string): void {
-    console.error(this.formatMessage('ERROR', message));
-  }
+export function error(message: string): void {
+  console.error(formatMessage('ERROR', message));
+}
 
-  static warn(message: string): void {
-    console.warn(this.formatMessage('WARN', message));
-  }
+export function warn(message: string): void {
+  console.warn(formatMessage('WARN', message));
+}
 
-  static debug(message: string): void {
-    console.debug(this.formatMessage('DEBUG', message));
-  }
+export function debug(message: string): void {
+  console.debug(formatMessage('DEBUG', message));
 }

@@ -17,7 +17,9 @@ export class ElasticPressFeatures {
   }
 
   categoryLink(name: string) {
-    return this.page.locator(`.ep-feature-nav a:text-is("${name}"), nav a:text-is("${name}")`).first();
+    return this.page
+      .locator(`.ep-feature-nav a:text-is("${name}"), nav a:text-is("${name}")`)
+      .first();
   }
 
   featureTab(name: string) {
@@ -29,7 +31,9 @@ export class ElasticPressFeatures {
   }
 
   get enableToggle() {
-    return this.page.locator('button[role="switch"], .components-form-toggle, input[type="checkbox"]').first();
+    return this.page
+      .locator('button[role="switch"], .components-form-toggle, input[type="checkbox"]')
+      .first();
   }
 
   async isFeaturesPageLoaded(): Promise<boolean> {
@@ -59,7 +63,7 @@ export class ElasticPressFeatures {
     if (isChecked) return true;
     const ariaChecked = await toggle.getAttribute('aria-checked');
     if (ariaChecked === 'true') return true;
-    const classes = await toggle.getAttribute('class') || '';
+    const classes = (await toggle.getAttribute('class')) || '';
     return classes.includes('is-checked') || classes.includes('active');
   }
 

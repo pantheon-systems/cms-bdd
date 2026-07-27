@@ -1,3 +1,4 @@
+import { execSync } from 'child_process';
 import { ENV } from '../config/environment';
 
 /**
@@ -13,7 +14,11 @@ export function getSiteEnv(url?: string, siteName?: string): string {
   siteName = siteName || process.env.SITE_NAME;
 
   if (siteName) {
-    const match = url.match(new RegExp(`https?://(.+)-${siteName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\.pantheonsite\\.io`));
+    const match = url.match(
+      new RegExp(
+        `https?://(.+)-${siteName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\.pantheonsite\\.io`,
+      ),
+    );
     if (match) return `${siteName}.${match[1]}`;
   }
 
@@ -44,7 +49,6 @@ export function getSiteName(url?: string): string {
  * Includes retry logic for Integrated Composer builds.
  */
 export async function ensureConnectionMode(mode: 'sftp' | 'git', url?: string): Promise<void> {
-  const { execSync } = await import('child_process');
   const env = getSiteEnv(url);
 
   let currentMode = '';
@@ -52,7 +56,9 @@ export async function ensureConnectionMode(mode: 'sftp' | 'git', url?: string): 
     currentMode = execSync(`terminus env:info ${env} --field=connection_mode 2>&1`, {
       encoding: 'utf-8',
       timeout: 30000,
-    }).trim().toLowerCase();
+    })
+      .trim()
+      .toLowerCase();
   } catch {
     // If we can't determine mode, try to set it anyway
   }
@@ -67,7 +73,7 @@ export async function ensureConnectionMode(mode: 'sftp' | 'git', url?: string): 
       });
       return;
     } catch {
-      await new Promise(r => setTimeout(r, 15000));
+      await new Promise((r) => setTimeout(r, 15000));
     }
   }
   throw new Error(`Failed to switch ${env} to ${mode} mode after 3 attempts`);
@@ -77,7 +83,6 @@ export async function ensureConnectionMode(mode: 'sftp' | 'git', url?: string): 
  * Execute a terminus command and return the output
  */
 export function terminusExec(command: string, timeoutMs = 120000): string {
-  const { execSync } = require('child_process');
   return execSync(`terminus ${command}`, {
     encoding: 'utf-8',
     timeout: timeoutMs,
@@ -116,21 +121,23 @@ export async function waitForWorkflows(siteName: string, maxWaitMs = 300000): Pr
     try {
       const output = terminusExec(
         `workflow:list ${siteName} --fields=workflow,status --format=json`,
-        30000
+        30000,
       );
       const workflows = JSON.parse(output);
       const running = Object.values(workflows).find(
-        (w: any) => w.status === 'running'
+        (w) => (w as Record<string, string>).status === 'running',
       );
       if (!running) {
         console.log(`[waitForWorkflows] No running workflows on ${siteName}`);
         return;
       }
-      console.log(`[waitForWorkflows] Workflow still running: ${(running as any).workflow}`);
+      console.log(
+        `[waitForWorkflows] Workflow still running: ${(running as Record<string, string>).workflow}`,
+      );
     } catch {
       // parse failure or terminus error — keep waiting
     }
-    await new Promise(r => setTimeout(r, pollInterval));
+    await new Promise((r) => setTimeout(r, pollInterval));
   }
   throw new Error(`Timed out waiting for workflows on ${siteName}`);
 }

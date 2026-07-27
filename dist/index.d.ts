@@ -24,10 +24,10 @@ export { ElasticPressFeatures } from './components/wordpress/ElasticPressFeature
 export { WordPressSearch } from './components/wordpress/WordPressSearch';
 export { ElasticPressAutosuggest } from './components/wordpress/ElasticPressAutosuggest';
 export { ElasticPressInstantResults } from './components/wordpress/ElasticPressInstantResults';
-export { Logger } from './utils/logger';
-export { TestHelpers } from './utils/helpers';
+export { info, error, warn, debug } from './utils/logger';
+export { generateRandomString, generateRandomEmail, wait, getCurrentTimestamp, formatDate, } from './utils/helpers';
 export { APIHelper } from './utils/api-helper';
-export { getSiteEnv, getSiteName, ensureConnectionMode, terminusExec, generateMultidevName, getGitUrl, waitForWorkflows } from './utils/terminus.util';
+export { getSiteEnv, getSiteName, ensureConnectionMode, terminusExec, generateMultidevName, getGitUrl, waitForWorkflows, } from './utils/terminus.util';
 export { ENV } from './config/environment';
 export { TIMEOUTS } from './config/constants';
 export type { CustomFixtures } from './fixtures/customFixtures';

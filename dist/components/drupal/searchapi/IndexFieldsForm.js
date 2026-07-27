@@ -29,16 +29,23 @@ class IndexFieldsForm {
      */
     async addField(fieldName) {
         const row = this.page.locator('tr').filter({ hasText: fieldName });
-        const addButton = row.getByRole('button', { name: 'Add' }).or(row.getByRole('link', { name: 'Add' }));
+        const addButton = row
+            .getByRole('button', { name: 'Add' })
+            .or(row.getByRole('link', { name: 'Add' }));
         await addButton.first().click();
         await this.page.waitForLoadState('networkidle', { timeout: constants_1.TIMEOUTS.LOAD_STATE });
     }
     async saveChanges() {
         // After adding fields, navigate back to the Fields tab which has the save button
         const fieldsTab = this.page.getByRole('link', { name: 'Fields' });
-        const doneLink = this.page.getByRole('link', { name: 'Done' }).or(this.page.getByRole('link', { name: 'Back to fields' }));
+        const doneLink = this.page
+            .getByRole('link', { name: 'Done' })
+            .or(this.page.getByRole('link', { name: 'Back to fields' }));
         // Try "Done" or "Back to fields" first, fall back to Fields tab
-        if (await doneLink.first().isVisible().catch(() => false)) {
+        if (await doneLink
+            .first()
+            .isVisible()
+            .catch(() => false)) {
             await doneLink.first().click();
         }
         else if (await fieldsTab.isVisible().catch(() => false)) {
@@ -46,7 +53,9 @@ class IndexFieldsForm {
         }
         await this.page.waitForLoadState('networkidle', { timeout: constants_1.TIMEOUTS.NAVIGATION });
         // Now click Save changes on the fields management page
-        const saveBtn = this.page.getByRole('button', { name: 'Save changes' }).or(this.page.locator('#edit-submit'));
+        const saveBtn = this.page
+            .getByRole('button', { name: 'Save changes' })
+            .or(this.page.locator('#edit-submit'));
         await saveBtn.first().click();
         await this.page.waitForLoadState('networkidle', { timeout: constants_1.TIMEOUTS.NAVIGATION });
     }

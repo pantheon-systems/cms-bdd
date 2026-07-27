@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TIMEOUTS = exports.ENV = exports.waitForWorkflows = exports.getGitUrl = exports.generateMultidevName = exports.terminusExec = exports.ensureConnectionMode = exports.getSiteName = exports.getSiteEnv = exports.APIHelper = exports.TestHelpers = exports.Logger = exports.ElasticPressInstantResults = exports.ElasticPressAutosuggest = exports.WordPressSearch = exports.ElasticPressFeatures = exports.ElasticPressHealth = exports.ElasticPressSync = exports.ElasticPressSettings = exports.WPLoginForm = exports.WPAdminMenu = exports.WPAdminBar = exports.SearchApiIndexOverview = exports.SearchApiIndexFieldsForm = exports.SearchApiIndexForm = exports.SearchApiServerStatus = exports.SearchApiServerForm = exports.DrupalExtendPage = exports.DrupalLoginForm = exports.DrupalToolbar = exports.ElasticPressPage = exports.WPLoginPage = exports.WPAdminPage = exports.DrupalSearchApiPage = exports.DrupalLoginPage = exports.DrupalAdminPage = exports.BasePage = exports.expect = exports.test = void 0;
+exports.TIMEOUTS = exports.ENV = exports.waitForWorkflows = exports.getGitUrl = exports.generateMultidevName = exports.terminusExec = exports.ensureConnectionMode = exports.getSiteName = exports.getSiteEnv = exports.APIHelper = exports.formatDate = exports.getCurrentTimestamp = exports.wait = exports.generateRandomEmail = exports.generateRandomString = exports.debug = exports.warn = exports.error = exports.info = exports.ElasticPressInstantResults = exports.ElasticPressAutosuggest = exports.WordPressSearch = exports.ElasticPressFeatures = exports.ElasticPressHealth = exports.ElasticPressSync = exports.ElasticPressSettings = exports.WPLoginForm = exports.WPAdminMenu = exports.WPAdminBar = exports.SearchApiIndexOverview = exports.SearchApiIndexFieldsForm = exports.SearchApiIndexForm = exports.SearchApiServerStatus = exports.SearchApiServerForm = exports.DrupalExtendPage = exports.DrupalLoginForm = exports.DrupalToolbar = exports.ElasticPressPage = exports.WPLoginPage = exports.WPAdminPage = exports.DrupalSearchApiPage = exports.DrupalLoginPage = exports.DrupalAdminPage = exports.BasePage = exports.expect = exports.test = void 0;
 // Fixtures
 var customFixtures_1 = require("./fixtures/customFixtures");
 Object.defineProperty(exports, "test", { enumerable: true, get: function () { return customFixtures_1.test; } });
@@ -60,9 +60,16 @@ var ElasticPressInstantResults_1 = require("./components/wordpress/ElasticPressI
 Object.defineProperty(exports, "ElasticPressInstantResults", { enumerable: true, get: function () { return ElasticPressInstantResults_1.ElasticPressInstantResults; } });
 // Utilities
 var logger_1 = require("./utils/logger");
-Object.defineProperty(exports, "Logger", { enumerable: true, get: function () { return logger_1.Logger; } });
+Object.defineProperty(exports, "info", { enumerable: true, get: function () { return logger_1.info; } });
+Object.defineProperty(exports, "error", { enumerable: true, get: function () { return logger_1.error; } });
+Object.defineProperty(exports, "warn", { enumerable: true, get: function () { return logger_1.warn; } });
+Object.defineProperty(exports, "debug", { enumerable: true, get: function () { return logger_1.debug; } });
 var helpers_1 = require("./utils/helpers");
-Object.defineProperty(exports, "TestHelpers", { enumerable: true, get: function () { return helpers_1.TestHelpers; } });
+Object.defineProperty(exports, "generateRandomString", { enumerable: true, get: function () { return helpers_1.generateRandomString; } });
+Object.defineProperty(exports, "generateRandomEmail", { enumerable: true, get: function () { return helpers_1.generateRandomEmail; } });
+Object.defineProperty(exports, "wait", { enumerable: true, get: function () { return helpers_1.wait; } });
+Object.defineProperty(exports, "getCurrentTimestamp", { enumerable: true, get: function () { return helpers_1.getCurrentTimestamp; } });
+Object.defineProperty(exports, "formatDate", { enumerable: true, get: function () { return helpers_1.formatDate; } });
 var api_helper_1 = require("./utils/api-helper");
 Object.defineProperty(exports, "APIHelper", { enumerable: true, get: function () { return api_helper_1.APIHelper; } });
 var terminus_util_1 = require("./utils/terminus.util");

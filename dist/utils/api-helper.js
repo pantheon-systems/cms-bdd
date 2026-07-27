@@ -8,7 +8,7 @@ class APIHelper {
         this.context = await test_1.request.newContext({
             baseURL,
             extraHTTPHeaders: {
-                'Accept': 'application/json',
+                Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
         });
