@@ -1,0 +1,54 @@
+{
+  "name": "cms-bdd",
+  "version": "1.0.0",
+  "description": "Reusable Playwright page objects, components, fixtures, and utilities for testing Drupal and WordPress sites",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint src/ && prettier --check src/",
+    "format": "eslint --fix src/ && prettier --write src/",
+    "test": "echo 'This is a framework library. Run tests from your test repository.'",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "playwright",
+    "bdd",
+    "automation",
+    "testing",
+    "e2e",
+    "framework",
+    "page-objects",
+    "drupal",
+    "wordpress"
+  ],
+  "author": "",
+  "license": "ISC",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^20.19.39",
+    "eslint": "^10.8.0",
+    "eslint-config-prettier": "^10.1.8",
+    "playwright-bdd": "^8.5.1",
+    "prettier": "^3.9.6",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.65.0"
+  },
+  "peerDependencies": {
+    "@playwright/test": "^1.60.0",
+    "allure-playwright": "^3.0.0",
+    "playwright": "^1.60.0",
+    "playwright-bdd": "^8.5.1"
+  },
+  "dependencies": {
+    "dotenv-flow": "^4.1.0"
+  },
+  "overrides": {
+    "uuid": ">=14.0.0"
+  }
+}
