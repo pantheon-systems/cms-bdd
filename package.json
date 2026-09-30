@@ -8,7 +8,7 @@
     "build": "tsc",
     "lint": "eslint src/ && prettier --check src/",
     "format": "eslint --fix src/ && prettier --write src/",
-    "test": "echo 'This is a framework library. Run tests from your test repository.'",
+    "test": "bddgen && playwright test",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -34,7 +34,7 @@
     "@types/node": "^20.19.39",
     "eslint": "^10.8.0",
     "eslint-config-prettier": "^10.1.8",
-    "playwright-bdd": "^8.5.1",
+    "playwright-bdd": "^9.0.0",
     "prettier": "^3.9.6",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.65.0"
@@ -43,7 +43,7 @@
     "@playwright/test": "^1.60.0",
     "allure-playwright": "^3.0.0",
     "playwright": "^1.60.0",
-    "playwright-bdd": "^8.5.1"
+    "playwright-bdd": "^9.0.0"
   },
   "dependencies": {
     "dotenv-flow": "^4.1.0"
