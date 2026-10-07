@@ -1,0 +1,73 @@
+name: Release
+
+# On every push to main: bump the patch version in package.json and
+# package-lock.json, commit it to main, tag that commit, and publish a GitHub
+# release with generated notes. Tags have no "v" prefix (e.g. 1.0.1).
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Bump version, tag, and release
+    # Skip the version-bump commit this workflow pushes, to avoid a loop.
+    if: ${{ !startsWith(github.event.head_commit.message, 'chore(release):') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          # Use RELEASE_TOKEN if configured (needed when the ruleset on main
+          # does not allow GITHUB_TOKEN to push); otherwise GITHUB_TOKEN.
+          token: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20
+
+      - name: Compute next version
+        id: next
+        run: |
+          PKG=$(node -p "require('./package.json').version")
+          LATEST_TAG=$(git tag --list '[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n1)
+          # Base is the higher of package.json and the latest tag, so a manual
+          # minor/major bump in package.json is respected.
+          BASE=$(printf '%s\n%s\n' "$PKG" "${LATEST_TAG:-0.0.0}" | sort -V | tail -n1)
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$BASE"
+          NEXT="${MAJOR}.${MINOR}.$((PATCH + 1))"
+          echo "package.json=$PKG latest_tag=${LATEST_TAG:-none} next=$NEXT"
+          echo "version=$NEXT" >> "$GITHUB_OUTPUT"
+
+      - name: Update package.json and package-lock.json
+        env:
+          VERSION: ${{ steps.next.outputs.version }}
+        run: npm version "$VERSION" --no-git-tag-version --allow-same-version
+
+      - name: Commit version bump
+        env:
+          VERSION: ${{ steps.next.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json
+          git commit -m "chore(release): ${VERSION}"
+          git push origin HEAD:main
+
+      - name: Tag and create GitHub release
+        env:
+          VERSION: ${{ steps.next.outputs.version }}
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          # Tag the bump commit so package.json at the tag matches the tag.
+          git tag "$VERSION"
+          git push origin "$VERSION"
+          gh release create "$VERSION" --generate-notes --title "$VERSION" --verify-tag
