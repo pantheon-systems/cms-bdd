@@ -28,14 +28,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
-        with:
-          node-version: 20
-
       - name: Read version from package.json
         id: version
         run: |
-          VERSION=$(node -p "require('./package.json').version")
+          VERSION=$(jq -r '.version // empty' package.json)
           if [ -z "$VERSION" ]; then
             echo "ERROR: could not read version from package.json"
             exit 1
@@ -91,6 +87,12 @@ jobs:
           echo "next_version=$NEXT_VERSION" >> "$GITHUB_OUTPUT"
           echo "Next dev version: $NEXT_VERSION"
 
+      - name: Set up Node
+        if: steps.check.outputs.is_release == 'true'
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20
+
       - name: Bump version in package.json and package-lock.json
         if: steps.check.outputs.is_release == 'true'
         env:
@@ -102,9 +104,9 @@ jobs:
         env:
           NEXT: ${{ steps.next.outputs.next_version }}
         run: |
-          PKG=$(node -p "require('./package.json').version")
-          LOCK=$(node -p "require('./package-lock.json').version")
-          LOCK_ROOT=$(node -p "require('./package-lock.json').packages[''].version")
+          PKG=$(jq -r '.version' package.json)
+          LOCK=$(jq -r '.version' package-lock.json)
+          LOCK_ROOT=$(jq -r '.packages[""].version' package-lock.json)
           if [ "$PKG" != "$NEXT" ] || [ "$LOCK" != "$NEXT" ] || [ "$LOCK_ROOT" != "$NEXT" ]; then
             echo "ERROR: expected $NEXT; package.json=$PKG lock=$LOCK lock root=$LOCK_ROOT"
             exit 1
