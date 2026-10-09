@@ -87,12 +87,6 @@ jobs:
           echo "next_version=$NEXT_VERSION" >> "$GITHUB_OUTPUT"
           echo "Next dev version: $NEXT_VERSION"
 
-      - name: Set up Node
-        if: steps.check.outputs.is_release == 'true'
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
-        with:
-          node-version: 20
-
       - name: Bump version in package.json and package-lock.json
         if: steps.check.outputs.is_release == 'true'
         env:
