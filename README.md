@@ -83,3 +83,17 @@ npm run build
 ```
 
 Test repositories import from `dist/`, not `src/`.
+
+## Releasing
+
+Releases are tagged and published automatically by [`.github/workflows/release.yml`](.github/workflows/release.yml). Tags have no `v` prefix (e.g. `1.0.1`).
+
+`main` normally carries a development version in `package.json` and `package-lock.json` (e.g. `1.0.1-dev`). While the version ends in `-dev`, merges to `main` do not release anything.
+
+**To cut a release:**
+
+1. Open a PR that removes the `-dev` suffix from the version in both `package.json` and `package-lock.json` (e.g. `1.0.1-dev` → `1.0.1`). For a minor or major release, set the number you want here (e.g. `1.1.0`).
+2. When that PR merges, the workflow tags the merge commit, creates a GitHub release with notes generated from the merged PRs, and opens a PR bumping `main` to the next patch `-dev` version (e.g. `1.0.2-dev`) with auto-merge enabled.
+3. Consumers can then pin to the new tag.
+
+To pin a consumer to a release, point its dependency at the tag, for example `github:pantheon-systems/cms-bdd#1.0.1`.
