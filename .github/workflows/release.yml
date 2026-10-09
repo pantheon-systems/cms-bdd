@@ -1,0 +1,132 @@
+name: Release
+
+# When a merge to main leaves package.json with a version that does not end in
+# "-dev", tag that commit, publish a GitHub release with generated notes, then
+# open a PR (with auto-merge) bumping main to the next patch "-dev" version.
+# Tags have no "v" prefix (e.g. 1.0.1). Mirrors pantheon-mu-plugin's release.yml.
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: release
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    name: Tag, Release, and Version Bump
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Read version from package.json
+        id: version
+        run: |
+          VERSION=$(jq -r '.version // empty' package.json)
+          if [ -z "$VERSION" ]; then
+            echo "ERROR: could not read version from package.json"
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Detected version: $VERSION"
+
+      - name: Check whether this is a release version
+        id: check
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          if [[ "$VERSION" == *-dev ]]; then
+            echo "is_release=false" >> "$GITHUB_OUTPUT"
+            echo "Version $VERSION ends in -dev — skipping release."
+          else
+            echo "is_release=true" >> "$GITHUB_OUTPUT"
+            echo "Version $VERSION is a release version — proceeding."
+          fi
+
+      - name: Configure git identity
+        if: steps.check.outputs.is_release == 'true'
+        run: |
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+
+      - name: Create Git tag
+        if: steps.check.outputs.is_release == 'true'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          git tag "$VERSION"
+          git push origin "$VERSION"
+
+      - name: Create GitHub Release
+        if: steps.check.outputs.is_release == 'true'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "$VERSION" \
+            --generate-notes \
+            --title "$VERSION"
+
+      - name: Compute next dev version
+        if: steps.check.outputs.is_release == 'true'
+        id: next
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+          NEXT_VERSION="${MAJOR}.${MINOR}.$(( PATCH + 1 ))-dev"
+          echo "next_version=$NEXT_VERSION" >> "$GITHUB_OUTPUT"
+          echo "Next dev version: $NEXT_VERSION"
+
+      - name: Set up Node
+        if: steps.check.outputs.is_release == 'true'
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20
+
+      - name: Bump version in package.json and package-lock.json
+        if: steps.check.outputs.is_release == 'true'
+        env:
+          NEXT: ${{ steps.next.outputs.next_version }}
+        run: npm version "$NEXT" --no-git-tag-version
+
+      - name: Verify both files were updated
+        if: steps.check.outputs.is_release == 'true'
+        env:
+          NEXT: ${{ steps.next.outputs.next_version }}
+        run: |
+          PKG=$(jq -r '.version' package.json)
+          LOCK=$(jq -r '.version' package-lock.json)
+          LOCK_ROOT=$(jq -r '.packages[""].version' package-lock.json)
+          if [ "$PKG" != "$NEXT" ] || [ "$LOCK" != "$NEXT" ] || [ "$LOCK_ROOT" != "$NEXT" ]; then
+            echo "ERROR: expected $NEXT; package.json=$PKG lock=$LOCK lock root=$LOCK_ROOT"
+            exit 1
+          fi
+          echo "All version strings updated to $NEXT"
+
+      - name: Open version bump PR
+        if: steps.check.outputs.is_release == 'true'
+        env:
+          NEXT: ${{ steps.next.outputs.next_version }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="chore/bump-version-${NEXT}"
+          git checkout -b "$BRANCH"
+          git add package.json package-lock.json
+          git commit -m "chore: bump version to ${NEXT}"
+          git push origin "$BRANCH"
+          gh pr create \
+            --title "chore: bump version to ${NEXT}" \
+            --body "Automated version bump after release. Merges automatically." \
+            --base main \
+            --head "$BRANCH"
+          gh pr merge "$BRANCH" --auto --squash
