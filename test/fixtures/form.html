@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Static fixture: form</title>
+  </head>
+  <body>
+    <form>
+      <label for="title">Title</label>
+      <input id="title" name="post_title" type="text" />
+
+      <!-- No associated label, as on admin screens that build controls through a filter. -->
+      <select name="settings[max_age]">
+        <option value="600">10 minutes</option>
+        <option value="604800">1 week</option>
+      </select>
+      <input name="settings[note]" type="text" />
+
+      <input id="subscribe" name="subscribe" type="checkbox" />
+      <label for="subscribe">Subscribe</label>
+    </form>
+  </body>
+</html>

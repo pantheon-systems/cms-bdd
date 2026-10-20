@@ -9,3 +9,8 @@ Given('the toolbar fixture is loaded', async ({ page }) => {
   const html = readFileSync(join(__dirname, '../fixtures/toolbar.html'), 'utf-8');
   await page.setContent(html);
 });
+
+Given('the form fixture is loaded', async ({ page }) => {
+  const html = readFileSync(join(__dirname, '../fixtures/form.html'), 'utf-8');
+  await page.setContent(html);
+});
