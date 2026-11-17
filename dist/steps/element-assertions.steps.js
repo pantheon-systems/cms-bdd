@@ -20,6 +20,16 @@ Then('I should see {string} in the {string} element', async ({ page }, text, sel
         timeout: constants_1.TIMEOUTS.ELEMENT_VISIBLE,
     });
 });
+Then('the {string} element should contain {string}', async ({ page }, selector, text) => {
+    await (0, test_1.expect)(page.locator(selector).first()).toContainText(text, {
+        timeout: constants_1.TIMEOUTS.ELEMENT_VISIBLE,
+    });
+});
+Then('the {string} element should not contain {string}', async ({ page }, selector, text) => {
+    await (0, test_1.expect)(page.locator(selector).first()).not.toContainText(text, {
+        timeout: constants_1.TIMEOUTS.ELEMENT_VISIBLE,
+    });
+});
 Then('I should see {int} {string} elements', async ({ page }, count, selector) => {
     await (0, test_1.expect)(page.locator(selector)).toHaveCount(count, {
         timeout: constants_1.TIMEOUTS.ELEMENT_VISIBLE,

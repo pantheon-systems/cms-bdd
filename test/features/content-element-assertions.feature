@@ -30,6 +30,12 @@ Feature: Content and element assertion steps
   Scenario: See text within a specific element
     Then I should see "Manage" in the "#toolbar-bar" element
 
+  Scenario: Element should contain text
+    Then the "#toolbar-bar" element should contain "Manage"
+
+  Scenario: Element should not contain absent text
+    Then the "#toolbar-bar" element should not contain "totally-absent-text-xyz123"
+
   Scenario: Count of matching elements
     Then I should see 1 "#toolbar-administration" elements
 
