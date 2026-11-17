@@ -27,6 +27,24 @@ Then(
 );
 
 Then(
+  'the {string} element should contain {string}',
+  async ({ page }, selector: string, text: string) => {
+    await expect(page.locator(selector).first()).toContainText(text, {
+      timeout: TIMEOUTS.ELEMENT_VISIBLE,
+    });
+  },
+);
+
+Then(
+  'the {string} element should not contain {string}',
+  async ({ page }, selector: string, text: string) => {
+    await expect(page.locator(selector).first()).not.toContainText(text, {
+      timeout: TIMEOUTS.ELEMENT_VISIBLE,
+    });
+  },
+);
+
+Then(
   'I should see {int} {string} elements',
   async ({ page }, count: number, selector: string) => {
     await expect(page.locator(selector)).toHaveCount(count, {
